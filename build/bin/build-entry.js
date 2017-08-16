@@ -9,17 +9,18 @@ var IMPORT_TEMPLATE = 'import {{name}} from \'../packages/{{package}}\';';
 var ISNTALL_COMPONENT_TEMPLATE = '  Vue.component({{name}}.name, {{name}});';
 var MAIN_TEMPLATE = `{{include}}
 import '../src/assets/font/iconfont.css';
+import merge from './utils/merge';
 
 const version = '{{version}}';
-const install = function(Vue) {
+const install = function(Vue, config = {}) {
   if (install.installed) return;
 
 {{install}}
   Vue.use(InfiniteScroll);
-  Vue.use(Lazyload, {
+  Vue.use(Lazyload, merge({
     loading: require('./assets/loading-spin.svg'),
-    try: 3
-  });
+    attempt: 3
+  }, config.lazyload));
 
   Vue.$messagebox = Vue.prototype.$messagebox = MessageBox;
   Vue.$toast = Vue.prototype.$toast = Toast;
@@ -82,4 +83,3 @@ var template = render(MAIN_TEMPLATE, {
 
 fs.writeFileSync(OUTPUT_PATH, template);
 console.log('[build entry] DONE:', OUTPUT_PATH);
-
